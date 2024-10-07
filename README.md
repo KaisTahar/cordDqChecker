@@ -59,7 +59,6 @@ Here are [exemplary reports](https://github.com/KaisTahar/cordDqChecker/tree/bmc
   | implausible links | number of implausible code links per year in a given data set |
   | duplicated RD cases |  number of duplicated RD cases per year in a given data set |
   | ambiguous RD cases | number of ambiguous RD cases per year in a given data set |
-  | mixed cases |  number of mixed cases (both RD and common diseases) per year in a given data set |
 
 - The following references are required to assess the quality of Orphacoding and can be easily updated with new versions: (1) The standard [Alpha-ID-SE](https://github.com/KaisTahar/cordDqChecker/blob/bmc_dqTools/Local/Data/refData/icd10gm2022_alphaidse_edvtxt.txt) terminology [1], and (2) the reference list for [standardized tracer diagnoses](https://github.com/KaisTahar/cordDqChecker/blob/bmc_dqTools/Local/Data/refData/Tracerdiagnosen_AlphaID-SE-2022.csv) provided in [2].
   

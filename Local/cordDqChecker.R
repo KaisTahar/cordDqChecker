@@ -282,9 +282,6 @@ if (is.null(path) | path=="" | is.na(path)) stop("No path to data") else {
       dqRep$st_name <-"CORD-MI"
       dqRep <-cbind(dqRep, out$metric)
       mItem <-out$mItem
-      mx <-dqRep$case_no_py- dqRep$rdCase_no_py
-      index <- which(names(dqRep)=="rdCase_no_py")
-      dqRep <- data.frame(dqRep[1:index],mxCases_no_py=mx,dqRep[(index+1):ncol(dqRep)])
       endTime <- base::Sys.time()
       timeTaken <-  round (as.numeric (endTime - startTime, units = "mins"), 2)
       dqRep$executionTime_inMin <-timeTaken
