@@ -14,10 +14,6 @@ library(stringi)
 library(parallel)
 library(fhircrackr)
 options(warn=-1)# to suppress warnings
-if(!require('dqLib')){
-  source("./R/dqLibCord.R")
-  source("./R/dqLibCore.R")
-}
 source("./R/dqFhirInterface.R")
 cat("####################################***CordDqChecker***########################################### \n \n")
 # check missing packages

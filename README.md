@@ -1,7 +1,7 @@
-# <p align="center"> cordDqChecker-BMC </p>
+# <p align="center"> CordDqChecker-BMC </p>
 ## <p align="center"> Data Quality Assessments on Rare Diseases Data – A Set of Metrics and Tools for BMC Journal of Medical Informatics and Decision Making </p>
 
-`cordDqChecker-BMC` contains the code version and all instructions used for conducting the study presented in the paper submitted to BMC Journal of Medical Informatics and Decision Making. This repository provides a set of metrics and tools for data quality (DQ) assessment and reporting on rare disease (RD) data.
+`CordDqChecker-BMC` contains the code version and all instructions used for conducting the study presented in the paper submitted to BMC Journal of Medical Informatics and Decision Making. This repository provides a set of metrics and tools for data quality (DQ) assessment and reporting on rare disease (RD) data.
 
 Acknowledgment: This work was done within the “Collaboration on Rare Diseases” of the Medical Informatics Initiative (CORD-MI) funded by the German Federal Ministry of Education and Research (BMBF), under grant number: FKZ-01ZZ1911R.
 
@@ -30,10 +30,10 @@ It should be noted that the developed tool supports HL7 FHIR as well as file for
 4. The script generates two files per year analyzed – the first one is a CSV file that contains the calculated DQ metrics, while the second file is an Excel file that contains a report on DQ violations. To enable users to find the DQ violations and causes of these violations, this report provides sensitive information such as Patient Identifier (ID) or case ID – it is meant for internal use only. The generated reports are saved in the folder `./Local/Data/Export`.
 
 ## 2. Synthetic Data and Exemplary Reports
-Here are [exemplary reports](https://github.com/KaisTahar/cordDqChecker/tree/bmc_dqTools/Local/Data/Export) on DQ generated using synthetic data from [the FHIR server](http://141.5.101.1:8080). To facilitate testing and reusing of our methods, synthetic data on RDs is made available in both [CSV](https://github.com/KaisTahar/cordDqChecker/blob/bmc_dqTools/Local/Data/medData/syntheticData.csv) and [FHIR](https://github.com/KaisTahar/cordDqChecker/tree/methods_dataCuration/Airolo) formats. These data sets follow the nationwide consented core data set [(MII-CDS)](https://www.medizininformatik-initiative.de/en/basic-modules-mii-core-data-set) of the Medical Informatics Initiative [(MII)](https://www.medizininformatik-initiative.de/en/start) and contain randomly introduced DQ issues as described by [Tahar el al.](https://www.thieme-connect.de/products/ejournals/abstract/10.1055/a-2006-1018)
+Here are [exemplary reports](https://github.com/KaisTahar/cordDqChecker/tree/bmc_dqTools/Local/Data/Export) on DQ generated using synthetic data from [the FHIR server](http://141.5.101.1:8080). To facilitate testing and reusing the implemented assessment methods, synthetic data on RDs is made available in both [CSV](https://github.com/KaisTahar/cordDqChecker/blob/bmc_dqTools/Local/Data/medData/syntheticData.csv) and [FHIR](https://github.com/KaisTahar/cordDqChecker/tree/methods_dataCuration/Airolo) formats. These data sets follow the wide-consented core data set [(MII-CDS)](https://www.medizininformatik-initiative.de/en/basic-modules-mii-core-data-set) of the Medical Informatics Initiative [(MII)](https://www.medizininformatik-initiative.de/en/start) and contain randomly introduced DQ issues as described by [Tahar et al.](https://www.thieme-connect.de/products/ejournals/abstract/10.1055/a-2006-1018)
 	
-## 3. Data Quality Metric
-- The data quality library (dqLib) has been used as an R package for generating specific reports on DQ issues and metrics. The developed software `cordDqChecker-BMC` is compatible with [`dqLib 1.5.0`](https://github.com/KaisTahar/dqLib/releases/tag/v1.5.0). To install all required packages, please use the script [`installPackages.R`](https://github.com/KaisTahar/cordDqChecker/tree/bmc_dqTools/Local/R/installPackages.R) or just run the command `sudo docker-compose up`. This command will install the necessary packages and run the DQ assessment software.
+## 3. Data Quality Metrics
+- The assessment software `CordDqChecker` was implemented using the data quality library (dqLib). This library provides multiple metrics to assess different DQ aspects, as presented in privous studies [1,2]. The software version used in this work for DQ assessments, referred to as `CordDqChecker-BMC`, is compatible with the latest release of [`dqLib version 1.32.0`](https://github.com/KaisTahar/dqLib/releases/tag/v1.32.0). Using the Docker environment is recommended to install all required packages and run the assessment software without local dependency issues (see above).
 
 - The following DQ indicators and parameters are configured by default reports:
   | Dimension  | DQ Indicator | 
@@ -61,20 +61,21 @@ Here are [exemplary reports](https://github.com/KaisTahar/cordDqChecker/tree/bmc
   | duplicated RD cases |  number of duplicated RD cases per year in a given data set |
   | ambiguous RD cases | number of ambiguous RD cases per year in a given data set |
 
-- The following references are required to assess the quality of Orphacoding and can be easily updated with new versions: (1) The standard [Alpha-ID-SE](https://github.com/KaisTahar/cordDqChecker/blob/bmc_dqTools/Local/Data/refData/icd10gm2022_alphaidse_edvtxt.txt) terminology [1], and (2) the reference list for [standardized tracer diagnoses](https://github.com/KaisTahar/cordDqChecker/blob/bmc_dqTools/Local/Data/refData/Tracerdiagnosen_AlphaID-SE-2022.csv) provided in [2].
+- The following references are required to assess the quality of Orphacoding and can be easily updated with new versions: (1) The standard [Alpha-ID-SE](https://github.com/KaisTahar/cordDqChecker/blob/bmc_dqTools/Local/Data/refData/icd10gm2022_alphaidse_edvtxt.txt) terminology [3], and (2) the reference list for [standardized tracer diagnoses](https://github.com/KaisTahar/cordDqChecker/blob/bmc_dqTools/Local/Data/refData/Tracerdiagnosen_AlphaID-SE-2022.csv).
   
-	[1]   BfArM - Alpha-ID-SE [Internet]. Available from: [BfArM](https://www.bfarm.de/EN/Code-systems/Terminologies/Alpha-ID-SE/_node.html) 
+	[1] Tahar K, Martin T, Mou Y, Verbuecheln R, Graessner H, Krefting D. Rare Diseases in Hospital Information Systems — An Interoperable Methodology for Distributed Data Quality Assessments. [DOI: 10.1055/a-2006-1018](https://www.thieme-connect.de/products/ejournals/abstract/10.1055/a-2006-1018)
 	
-	[2]   Tahar K, Martin T, Mou Y, et al. Distributed Data Quality Assessment Across CORD-MI Consortia. [doi:10.3205/22gmds116](https://www.egms.de/static/en/meetings/gmds2022/22gmds116.shtml)
-
+	[2] Tahar K, Verbuecheln R, Martin T, Graessner H, Krefting D. Local Data Quality Assessments on EHR-Based Real-World Data for Rare Diseases. [DOI: 10.3233/SHTI230121](https://pubmed.ncbi.nlm.nih.gov/37203665/)
+	
+	[3] BfArM - Alpha-ID-SE [Internet]. Available from: [BfArM](https://www.bfarm.de/EN/Code-systems/Terminologies/Alpha-ID-SE/_node.html)
 
 ## 4. Note
 
--  You can also run `cordDqChecker-BMC` using Rstudio or Dockerfile. When using Rstudio, all required packages should be installed automatically using the script [`installPackages.R`](https://github.com/KaisTahar/cordDqChecker/tree/bmc_dqTools/Local/R/installPackages.R). It should be noted that the `fhircrackr` package is only required to run DQ assessments on FHIR data. To avoid local dependency issues go to folder `./Local` and just run the command `sudo docker-compose up` to get `cordDqChecker` running
+-  You can also run `CordDqChecker-BMC` using Rstudio or Dockerfile. When using Rstudio, all required packages should be installed automatically using the script [`installPackages.R`](https://github.com/KaisTahar/cordDqChecker/tree/bmc_dqTools/Local/R/installPackages.R). It should be noted that the `fhircrackr` package is only required to run DQ assessments on FHIR data.  To avoid local dependency issues go to folder `./Local` and just run the command `sudo docker-compose up` to get `CordDqChecker-BMC` running
 
 - The missing item rate is calculated based on [FHIR implementation guidlines](https://www.medizininformatik-initiative.de/en/basic-modules-mii-core-data-set) of the MII-CDS. Hence, mandatory items of the basic modules Person, Treatment Case, and Diagnosis are required
 
-- To cite `cordDqChecker-BMC`, please use the citation file [`CITATION.cff`](https://github.com/KaisTahar/cordDqChecker/blob/bmc_dqTools/CITATION.cff)
+- To cite `CordDqChecker-BMC`, please use the citation file [`CITATION.cff`](https://github.com/KaisTahar/cordDqChecker/blob/bmc_dqTools/CITATION.cff)
 
 See also: [`CORD-MI`](https://www.medizininformatik-initiative.de/de/CORD)
 
