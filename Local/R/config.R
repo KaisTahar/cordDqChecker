@@ -134,3 +134,8 @@ if (exists("tracerDiagnoses_reference", where = conf) && nchar(conf$tracerDiagno
 }else {
   tracerDiagnoses_ref <-"./Data/refData/Tracerdiagnosen_AlphaID-SE-2022.csv"
 }
+
+# v11) check for domain metadata
+if (exists("domain_metadata", where = conf) && nchar(conf$domain_metadata) >= 3) {
+  domainMetadataPath <-conf$domain_metadata
+  } else stop("No data path found for metadata, please set the domain metadata path in the config file")

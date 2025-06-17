@@ -37,26 +37,26 @@ source("./R/config.R")
 exportFile = "DQ-Report"
 
 #------------------------------------------------------------------------------------------------------
-# Setting ref. Data
+# Setting metadata and DQ references
 #------------------------------------------------------------------------------------------------------
 # defining mandatory and optional items
+metadata <- read.xlsx(xlsxFile = domainMetadataPath, sheet = "Metadata", skipEmptyRows = FALSE)
 cdata <- data.frame(
-  basicItem= c("PatientIdentifikator","Aufnahmenummer", "Institut_ID",  "Geschlecht","PLZ", "Land","Kontakt_Klasse", "Fall_Status", "DiagnoseRolle", "ICD_Primaerkode", "Total")
+  basicItem= c(metadata$Categorical_data_item[!is.na(metadata$Categorical_data_item)], "Total"),
+  engLabel = c(metadata$Categorical_data_item_engLabel[!is.na(metadata$Categorical_data_item_engLabel)], NA)
 )
 ddata <- data.frame(
-  basicItem= c ( "Geburtsdatum",  "Aufnahmedatum", "Entlassungsdatum", "Diagnosedatum", "Total"),
-  engLabel = c("birthdate", "admission date" , "discharge date", "diagnosis date", NA)
+  basicItem= c(metadata$Temporal_data_item[!is.na(metadata$Temporal_data_item)], "Total"),
+  engLabel = c(metadata$Temporal_data_item_engLabel[!is.na(metadata$Temporal_data_item_engLabel)], NA)
 )
-
-# semantic mapping of labels and symbolic names (also called code variables)
-semData <- read.table("./Data/refData/semData.csv", sep=",",  dec=",", na.strings=c("","NA"), encoding = "UTF-8",header=TRUE)
-
 # optional items
-oItem = c("Orpha_Kode")
+oItem = metadata$Optional_data_item[!is.na(metadata$Optional_data_item)]
 tdata <- data.frame(
   pt_no =NA, case_no =NA
 )
-caseItems <- c("PatientIdentifikator","Aufnahmenummer","Kontakt_Klasse", "Fall_Status","ICD_Primaerkode", "Aufnahmedatum", "Entlassungsdatum", "Diagnosedatum","DiagnoseRolle")
+# case items
+caseItems <- metadata$Case_data_item[!is.na(metadata$Case_data_item)]
+#references for data quality checks
 refData1 <- read.table(tracerDiagnoses_ref, sep=",",  dec=",", na.strings=c("","NA"), encoding = "UTF-8",header=TRUE)
 refData2 <- read.table(alphaIdSe_ref, sep="|", dec= "," , quote ="", na.strings=c("","NA"), encoding = "UTF-8")
 headerRef1<- c ("IcdCode", "Complete_SE", "Unique_SE")
@@ -64,56 +64,22 @@ headerRef2<- c ("Gueltigkeit", "Alpha_ID", "ICD_Primaerkode1", "ICD_Manifestatio
 names(refData1)<-headerRef1
 names(refData2)<-headerRef2
 cordDiagnosisList <- read.table(diagnosisPath, sep=",",  dec=",", na.strings=c("","NA"), encoding = "UTF-8",header=TRUE)$IcdCode
+
+#------------------------------------------------------------------------------------------------------
+# Setting the report design and related DQ metrics
+#------------------------------------------------------------------------------------------------------
+repData <- read.xlsx(xlsxFile = domainMetadataPath, sheet = "Report_metadata", skipEmptyRows = FALSE)
 # meta data for DQ report
 repMeta= c("inst_id", "report_year")
-bItemCl <-"basicItem"
-totalRow <-"Total"
 repHeader <- data.frame(
-  repCol=c( "PatientIdentifikator", "Aufnahmenummer", "ICD_Primaerkode","Orpha_Kode"),
-  engLabel = c("Patient ID", "Admission ID" , "ICD_Primary Code", "Orphacode")
+  repCol=repData$Report_metadata[!is.na(repData$Report_metadata)],
+  engLabel = repData$Report_metadata_engLabel[!is.na(repData$Report_metadata_engLabel)]
 )
 repCol <-repHeader$repCol
-
-#------------------------------------------------------------------------------------------------------
-# Setting DQ dimensions , indicators and parameters
-#------------------------------------------------------------------------------------------------------
-############## Selection of DQ dimensions and indicators #########
-# select DQ indicators for completeness dimension
-compInd= c(
-  "item_completeness_rate", 
-  "value_completeness_rate", 
-  "orphaCoding_completeness_rate"
-)
-# select DQ indicators for plausibility dimension
-plausInd= c( 
-  "range_plausibility_rate", 
-  "orphaCoding_plausibility_rate"
-)
-# select DQ indicators for uniqueness dimension
-uniqInd= c(
-  "rdCase_unambiguity_rate",
-  "rdCase_dissimilarity_rate"
-)
-
-############ Selection of DQ parameters ########################
-# select DQ parameters for DQ report
-dqParam= c(
-  "case_no_py",
-  "patient_no_py",
-  "missing_item_no_py",
-  "missing_value_no_py",
-  "outlier_no_py",
-  "orphaMissing_no_py",
-  "implausible_codeLink_no_py",
-  "ambiguous_rdCase_no_py", 
-  "duplicateRdCase_no_py",
-  "rdCase_no_py",
-  "orphaCase_no_py",
-  "tracerCase_no_py",
-  "rdCase_rel_py_ipat",
-  "orphaCase_rel_py_ipat",
-  "tracerCase_rel_py_ipat"
-  )
+# Semantic mapping of labels and symbolic names (also called code variables)
+semData <-subset (repData, select=c(Label, Abbreviation, SymbolicName))
+# Selected DQ dimensions and related metrics
+dqMetrics <-repData$Selected_DQ_metric[!is.na(repData$Selected_DQ_metric)]
 
 #------------------------------------------------------------------------------------------------------
 # Import CORD data
@@ -274,7 +240,7 @@ if (is.null(path) | path=="" | is.na(path)) stop("No path to data") else {
     for (i in 1:length (inst)) {
       instID <- as.character (inst[i]) 
       # DQ report
-      dqRepCol <- c(repMeta, compInd, plausInd, uniqInd, dqParam)
+      dqRepCol <- c(repMeta, dqMetrics)
       out <-checkCordDQ(instID, reportYear , inpatientCases, refData1, refData2, dqRepCol,repCol, "DQ_Violations", "basicItem", "Total", oItem, caseItems)
       dqRep$st_name <-"CORD-MI"
       dqRep <-cbind(dqRep, out$metric)

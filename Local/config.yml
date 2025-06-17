@@ -32,7 +32,7 @@ default:
   #inpatientEncounter_code: "IMP"
   
   #--------------------------------------------------------------------------------------------------------------------
-  # Please change the variables v5 - v9 only if technical or legal restrictions otherwise prevent successful execution!
+  # Please change the variables v5 - v9 only if technical or legal restrictions prevent successful execution!
   #--------------------------------------------------------------------------------------------------------------------
   # v6) set the start and end of the reporting period
   startYear: 2020
@@ -64,6 +64,9 @@ default:
   ageMax: 130
   alphaIdSe_reference: "./Data/refData/icd10gm2022_alphaidse_edvtxt.txt"
   tracerDiagnoses_refrence: "./Data/refData/Tracerdiagnosen_AlphaID-SE-2022.csv"
+  
+  # v11) Set the path to the domain metadata and selected DQ metrics
+  domain_metadata: "./Data/refData/domain_metadata.xlsx"
 
 
   
